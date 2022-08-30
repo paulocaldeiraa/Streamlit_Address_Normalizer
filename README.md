@@ -11,7 +11,7 @@
 
 - 📫 How to reach me **caldeirahpaulo@gmail.com**
 
-- 📄 Know about my experiences [I work as a Junior Data Analyst in a company that supports a legal team for large class actions in Brazil](I work as a Junior Data Analyst in a company that supports a legal team for large class actions in Brazil)
+- 📄 Know about my experiences [I work as a Data Analyst in a company that supports a legal team for large class actions in Brazil]
 
 - ⚡ Fun fact **Before pursuing a career in data I was a Biologist =D**
 
