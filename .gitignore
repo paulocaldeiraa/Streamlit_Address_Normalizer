@@ -1,0 +1,10 @@
+#Folder ignore
+Lib
+Scripts
+Include
+etc
+share
+__pycache__
+
+#Files ignore
+*.cfg
