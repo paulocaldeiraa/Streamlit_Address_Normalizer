@@ -3,7 +3,7 @@
 
 - 🔭 I’m currently working on **Streamlit Address Normalizer**
 
-- 🌱 I’m currently learning **Python, Streamlit, Pandas, Numpay, Git**
+- 🌱 I’m currently learning **Python, Streamlit, Pandas, Numpy, Git**
 
 - 👨‍💻 All of my projects are available at [https://github.com/paulocaldeiraa](https://github.com/paulocaldeiraa)
 
