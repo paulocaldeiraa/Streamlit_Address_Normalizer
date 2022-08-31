@@ -5,12 +5,10 @@ from multiprocessing import Value
 from operator import index
 import streamlit as st #pip install streamlit
 import pandas as pd
-import geopy #pip install geopy
-from geopy.geocoders import Nominatim
-# import geolocate
+from geopy.geocoders import Nominatim #pip install geopy
 from geolocate import geolocate as geo #pip install geolocate
-from utils import get_coordenates
-from utils import split_address
+from utils import get_coordinates
+from utils import process_addresses
 from utils import convert_df
 from datetime import datetime, timedelta
 import os
@@ -31,11 +29,11 @@ st.set_page_config(
 # Setting the text instructions for the app 
 st.title('🗺️ Address Normalizer')
 st.header('📖 Instructions')
-st.write("Using an address it is possible to obtain the geographical \
-coordinates and the separation between street, city, neighborhood, \
-and other fields. Just send a CSV, \
-note that the column with the addresses needs to be named 'Address'. \
-Don't worry if the addresses are not correct, the AN will correct it for you.")
+st.write("Using an address it is possible to get the geographical coordinates \
+     and the separation between street, city, neighborhood, and other fields. \
+     Just upload a CSV, note that the column with the addresses needs to be named \
+     'Address'. Don't worry if the addresses are not correct, the AN will correct \
+     them for you. *This process may take a few minutes depending on the CSV*")
 
 # ---------- Download Sample CSV ----------
 csv = convert_df(pd.read_csv('sample_csv.csv'))
@@ -56,7 +54,6 @@ col1, col2, col3= st.columns([2,0.3,3])
 
 
 # ---------- DataFrame ----------
-
 if uploaded_file is not None:
 # Define the DataFrame
     df = pd.read_csv(uploaded_file, low_memory=False)
@@ -64,15 +61,14 @@ if uploaded_file is not None:
     with col1: 
 # Create the selected bottuns
         get_geo_button = st.button('Get Coordinates')  
-        split_button = st.button('Split Address')  
+        split_button = st.button('Process the Addresses') 
         st.write(df)
         
-
  # ---------- Generate the Coordinates ----------
     if get_geo_button is True:
         with col3:
-            get_coordenates(df)
-            csv = convert_df(pd.read_csv('new_df.csv'))
+            get_coordinates(df)
+            csv = convert_df(pd.read_csv('coords_df.csv'))
 
             st.download_button(
                 label="Download CSV with Coordinates",
@@ -82,13 +78,13 @@ if uploaded_file is not None:
                 mime='text/csv'
             )
             st.title('')
-            st.write(get_coordenates(df))
+            st.write(pd.read_csv('coords_df.csv'))
 
-
+    
     if split_button is True:
         with col3:
-            split_address(df)
-            csv = convert_df(pd.read_csv('to_be_downloaded.csv'))
+            process_addresses(df)
+            csv = convert_df(pd.read_csv('final_df.csv'))
 
             st.download_button(
                 label="Download CSV with Splited Addresses",
@@ -98,11 +94,15 @@ if uploaded_file is not None:
                 mime='text/csv',
             )
             st.title('')
-            st.write(split_address(df))
+            st.write(pd.read_csv('final_df.csv'))
+
 
  # ---------- Remove extra files ----------
-            if os.path.exists("new_df.csv"):
-                os.remove("new_df.csv")
+        if os.path.exists("geo_df.csv"):
+            os.remove("geo_df.csv")
 
-            if os.path.exists("to_be_downloaded.csv"):
-                os.remove("to_be_downloaded.csv")
+        if os.path.exists("coords_df.csv"):
+            os.remove("coords_df.csv")
+
+        if os.path.exists("final_df.csv"):
+            os.remove("final_df.csv")
