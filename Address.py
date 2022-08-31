@@ -36,7 +36,7 @@ st.write("Using an address it is possible to get the geographical coordinates \
      them for you. *This process may take a few minutes depending on the CSV*")
 
 # ---------- Download Sample CSV ----------
-csv = convert_df(pd.read_csv('st_address_sample_csv.csv'))
+csv = convert_df(pd.read_csv('st_address_sample.csv'))
 
 st.download_button(
     label="Download sample CSV",
