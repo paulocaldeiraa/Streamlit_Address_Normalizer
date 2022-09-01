@@ -6,7 +6,7 @@ from geopy.point import Point
 
 # ---------- Functions ----------
 @st.experimental_memo
-def get_coordinates(df):
+def process_addresses(df):
 # Use the import geo to get a coordinates from uplouaded file
     loc = []
     for address in df['Address']:
@@ -22,14 +22,7 @@ def get_coordinates(df):
     df_geo['Coordinates'].replace("''", '', regex=True,inplace=True)
     df_geo['Coordinates'].replace('}', '', regex=True,inplace=True)
     df_geo['Coordinates'].replace(':', '', regex=True,inplace=True)
-    df_geo.to_csv('coords_df.csv', index=False)
-    df_coords = pd.read_csv('coords_df.csv')
 
-    return df_coords
-
-@st.experimental_memo
-def process_addresses(df):
-    df_coords = pd.read_csv('coords_df.csv')
 # Creating new columns to separate the address
     road = []
     house_number = []
@@ -41,7 +34,7 @@ def process_addresses(df):
     country = []
 
 # Using geo to get the full address from the coordinates
-    for geoloc in df_coords['Coordinates']:
+    for geoloc in df_geo['Coordinates']:
         geolocator = Nominatim(user_agent="AddressNormalizer")
 
         try:
@@ -110,15 +103,15 @@ def process_addresses(df):
 
 
 # Saving the result in each of the new columns 
-    df_coords['Road'] = pd.DataFrame(road)
-    df_coords['House_Number'] = pd.DataFrame(house_number)
-    df_coords['Suburb'] = pd.DataFrame(suburb)
-    df_coords['City'] = pd.DataFrame(city)                                                                   
-    df_coords['County'] = pd.DataFrame(county)
-    df_coords['State'] = pd.DataFrame(state)   
-    df_coords['Postcode'] = pd.DataFrame(postcode)
-    df_coords['Country'] = pd.DataFrame(country)
-    df_coords.to_csv('final_df.csv', index = False)
+    df_geo['Road'] = pd.DataFrame(road)
+    df_geo['House_Number'] = pd.DataFrame(house_number)
+    df_geo['Suburb'] = pd.DataFrame(suburb)
+    df_geo['City'] = pd.DataFrame(city)                                                                   
+    df_geo['County'] = pd.DataFrame(county)
+    df_geo['State'] = pd.DataFrame(state)   
+    df_geo['Postcode'] = pd.DataFrame(postcode)
+    df_geo['Country'] = pd.DataFrame(country)
+    df_geo.to_csv('final_df.csv', index = False)
 
     download_df = pd.read_csv('final_df.csv')
 

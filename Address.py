@@ -2,12 +2,12 @@
 from ast import With
 from functools import cache
 from multiprocessing import Value
+from multiprocessing.resource_sharer import stop
 from operator import index
 import streamlit as st #pip install streamlit
 import pandas as pd
 from geopy.geocoders import Nominatim #pip install geopy
 from geolocate import geolocate as geo #pip install geolocate
-from utils import get_coordinates
 from utils import process_addresses
 from utils import convert_df
 from datetime import datetime, timedelta
@@ -56,53 +56,36 @@ col1, col2, col3= st.columns([2,0.3,3])
 # ---------- DataFrame ----------
 if uploaded_file is not None:
 # Define the DataFrame
-    df = pd.read_csv(uploaded_file, low_memory=False)
-
-    with col1: 
-# Create the selected bottuns
-        get_geo_button = st.button('Get Coordinates')  
-        split_button = st.button('Process the Addresses') 
-        st.write(df)
-        
- # ---------- Generate the Coordinates ----------
-    if get_geo_button is True:
-        with col3:
-            get_coordinates(df)
-            csv = convert_df(pd.read_csv('coords_df.csv'))
-
-            st.download_button(
-                label="Download CSV with Coordinates",
-                data=csv,
-                file_name='Address_Normalizer_'+ \
-                datetime.now().strftime("%Y%m%d_%H%M") + '.csv',
-                mime='text/csv'
-            )
-            st.title('')
-            st.write(pd.read_csv('coords_df.csv'))
+    try:
+        df = pd.read_csv(uploaded_file, low_memory=False)
+        with col1:
+# # Create the selected bottuns
+            get_geo_button = st.button('Process the Addresses')  
+            st.write(df)
 
     
-    if split_button is True:
-        with col3:
-            process_addresses(df)
-            csv = convert_df(pd.read_csv('final_df.csv'))
+ # ---------- Generate the Coordinates ----------
+        if get_geo_button is True:
+            with col3:
+                process_addresses(df)
+                csv = convert_df(pd.read_csv('final_df.csv'))
 
-            st.download_button(
-                label="Download CSV with Splited Addresses",
-                data=csv,
-                file_name='Address_Normalizer_'+ \
-                datetime.now().strftime("%Y%m%d_%H%M") + '.csv',
-                mime='text/csv',
-            )
-            st.title('')
-            st.write(pd.read_csv('final_df.csv'))
-
+                st.download_button(
+                    label="Download the CSV File",
+                    data=csv,
+                    file_name='Address_Normalizer_'+ \
+                    datetime.now().strftime("%Y%m%d_%H%M") + '.csv',
+                    mime='text/csv'
+                )
+                st.write(pd.read_csv('final_df.csv'))
 
  # ---------- Remove extra files ----------
+
         if os.path.exists("geo_df.csv"):
             os.remove("geo_df.csv")
 
-        if os.path.exists("coords_df.csv"):
-            os.remove("coords_df.csv")
-
         if os.path.exists("final_df.csv"):
             os.remove("final_df.csv")
+        
+    except UnicodeDecodeError:
+        st.header('Please select a CSV file to proced.')
