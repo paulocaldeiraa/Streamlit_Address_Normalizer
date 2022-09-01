@@ -63,8 +63,8 @@ if uploaded_file is not None:
             get_geo_button = st.button('Process the Addresses')  
             st.write(df)
 
-    
  # ---------- Generate the Coordinates ----------
+
         if get_geo_button is True:
             with col3:
                 process_addresses(df)
@@ -88,4 +88,8 @@ if uploaded_file is not None:
             os.remove("final_df.csv")
         
     except UnicodeDecodeError:
-        st.header('Please select a CSV file to proced.')
+        st.error('Please select a CSV file to proced.', icon="🚨")
+    except FileNotFoundError:
+        with col3:
+            st.error('Please reselect the file, \
+                 if the error continues please contact us.')
